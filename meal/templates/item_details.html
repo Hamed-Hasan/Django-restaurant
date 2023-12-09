@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1 class="text-lg-center">Item Details</h1>
+
+    {% if selected_item %}
+        <div class="meal-box container col-md-4 col-sm-12 m-auto mt-4">
+            <div class="card shadow-lg p-3 mb-5 bg-body rounded" style="width: 18rem;">
+                <img src="{{ selected_item.strCategoryThumb }}" class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title">Name: {{ selected_item.strCategory }}</h5>
+                    <h6 class="card-text">ID: {{ selected_item.idCategory }}</h6>
+                    <p class="card-text">{{ selected_item.strCategoryDescription }}</p>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <p>Item not found.</p>
+    {% endif %}
+{% endblock %}
