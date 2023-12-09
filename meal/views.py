@@ -1,9 +1,9 @@
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import render
 
-# Create your views here.
 def show_item(request):
-    meals={
-              "categories": [
+    meals = {
+         "categories": [
               {
                 "idCategory": "1",
                 "strCategory": "Beef",
@@ -40,6 +40,44 @@ def show_item(request):
                 "strCategoryThumb": "https://www.themealdb.com/images/category/pasta.png",
                 "strCategoryDescription": "Pasta is a staple food of traditional Italian cuisine, with the first reference dating to 1154 in Sicily.\r\n\r\nAlso commonly used to refer to the variety of pasta dishes, pasta is typically a noodle made from an unleavened dough of a durum wheat flour mixed with water or eggs and formed into sheets or various shapes, then cooked by boiling or baking. As an alternative for those wanting a different taste, or who need to avoid products containing gluten, some pastas can be made using rice flour in place of wheat.[3][4] Pastas may be divided into two broad categories, dried (pasta secca) and fresh (pasta fresca)."
               },
+              {
+                "idCategory": "7",
+                "strCategory": "Lamb",
+                "strCategoryThumb": "https://www.themealdb.com/images/category/lamb.png",
+                "strCategoryDescription": "Lamb, hogget, and mutton are the meat of domestic sheep (species Ovis aries) at different ages.A sheep in its first year is called a lamb, and its meat is also called lamb. The meat of a juvenile sheep older than one year is hogget; outside the USA this is also a term for the living animal. The meat of an adult sheep is mutton, a term only used for the meat, not the living animals. The term mutton is almost always used to refer to goat meat in the Indian subcontinent"
+              },
+              {
+                "idCategory": "8",
+                "strCategory": "Miscellaneous",
+                "strCategoryThumb": "https://www.themealdb.com/images/category/miscellaneous.png",
+                "strCategoryDescription": "General foods that don't fit into another category. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
+              },
+              {
+                "idCategory": "9",
+                "strCategory": "Pasta",
+                "strCategoryThumb": "https://www.themealdb.com/images/category/pasta.png",
+                "strCategoryDescription": "Pasta is a staple food of traditional Italian cuisine, with the first reference dating to 1154 in Sicily.\r\n\r\nAlso commonly used to refer to the variety of pasta dishes, pasta is typically a noodle made from an unleavened dough of a durum wheat flour mixed with water or eggs and formed into sheets or various shapes, then cooked by boiling or baking. As an alternative for those wanting a different taste, or who need to avoid products containing gluten, some pastas can be made using rice flour in place of wheat.[3][4] Pastas may be divided into two broad categories, dried (pasta secca) and fresh (pasta fresca)."
+              },
               ]
-}
-    return render(request,'index.html',{'meals':meals['categories']})
+    }
+
+    # Number of items per page
+    items_per_page = 6
+
+    # Get the page number from the request's GET parameters
+    page = request.GET.get('page', 1)
+
+    # Create a Paginator object
+    paginator = Paginator(meals['categories'], items_per_page)
+
+    try:
+        # Get the specified page
+        current_page = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver the first page.
+        current_page = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g., 9999), deliver the last page of results.
+        current_page = paginator.page(paginator.num_pages)
+
+    return render(request, 'index.html', {'meals': current_page})
