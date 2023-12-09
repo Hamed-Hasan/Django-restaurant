@@ -3,30 +3,74 @@
 {% load static %}
 
 {% block design %}
-    <link rel="stylesheet" href="{% static "css/meal.css" %}">
+    <style>
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+            margin-bottom: 50px;
+        }
+
+        .step-links a {
+            display: inline-block;
+            padding: 8px 16px;
+            margin: 0 4px;
+            border: 1px solid #ddd;
+            background-color: #f1f1f1;
+            color: black;
+            text-decoration: none;
+        }
+
+        .step-links .current {
+            padding: 8px 16px;
+            border: 1px solid #4CAF50;
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        /* Center the search bar */
+        form {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        input[type="text"],
+        input[type="submit"] {
+            padding: 8px;
+        }
+    </style>
 {% endblock %}
 
 {% block content %}
     <h1 class="text-lg-center">Menu</h1>
-        {% for i in meals %}
-            <div class="meal-box container col-md-4 col-sm-12 m-auto mt-4">
-                <div class="card shadow-lg p-3 mb-5 bg-body rounded" style="width: 18rem;">
-                    <img src="{{ i.strCategoryThumb }}" class="card-img-top" alt="...">
-                    <div class="card-body">
-                      <h5 class="card-title">Name: {{ i.strCategory }}</h5>
-                      <h6 class="card-text">ID: {{ i.idCategory }}</h6>
-                      <p class="card-text">{{ i.strCategoryDescription | truncatewords:10 }}</p>
-                    </div>
-                  </div>
+
+    <!-- Centered Search bar -->
+    <form method="get" action="{% url 'show_item' %}">
+        <input type="text" name="q" value="{{ search_query }}" placeholder="Search items...">
+        <input type="submit" value="Search">
+    </form>
+
+    {% for i in meals %}
+        <div class="meal-box container col-md-4 col-sm-12 m-auto mt-4">
+            <div class="card shadow-lg p-3 mb-5 bg-body rounded" style="width: 18rem;">
+                <img src="{{ i.strCategoryThumb }}" class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title">Name: {{ i.strCategory }}</h5>
+                    <h6 class="card-text">ID: {{ i.idCategory }}</h6>
+                    <p class="card-text">{{ i.strCategoryDescription | truncatewords:10 }}</p>
+                </div>
             </div>
-        {% endfor %}
+        </div>
+    {% endfor %}
 
     <!-- Pagination -->
     <div class="pagination">
         <span class="step-links">
             {% if meals.has_previous %}
-                <a href="?page=1">&laquo; first</a>
-                <a href="?page={{ meals.previous_page_number }}">previous</a>
+                <a href="?q={{ search_query }}&page=1">&laquo; first</a>
+                <a href="?q={{ search_query }}&page={{ meals.previous_page_number }}">previous</a>
             {% endif %}
 
             <span class="current">
@@ -34,8 +78,8 @@
             </span>
 
             {% if meals.has_next %}
-                <a href="?page={{ meals.next_page_number }}">next</a>
-                <a href="?page={{ meals.paginator.num_pages }}">last &raquo;</a>
+                <a href="?q={{ search_query }}&page={{ meals.next_page_number }}">next</a>
+                <a href="?q={{ search_query }}&page={{ meals.paginator.num_pages }}">last &raquo;</a>
             {% endif %}
         </span>
     </div>

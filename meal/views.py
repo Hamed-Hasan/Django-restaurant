@@ -61,14 +61,20 @@ def show_item(request):
               ]
     }
 
-    # Number of items per page
+   # Number of items per page
     items_per_page = 6
+
+    # Get the search query from the request's GET parameters
+    search_query = request.GET.get('q', '')
+
+    # Filter meals based on the search query
+    filtered_meals = [meal for meal in meals['categories'] if search_query.lower() in meal['strCategory'].lower()]
+
+    # Create a Paginator object for filtered meals
+    paginator = Paginator(filtered_meals, items_per_page)
 
     # Get the page number from the request's GET parameters
     page = request.GET.get('page', 1)
-
-    # Create a Paginator object
-    paginator = Paginator(meals['categories'], items_per_page)
 
     try:
         # Get the specified page
@@ -80,4 +86,4 @@ def show_item(request):
         # If page is out of range (e.g., 9999), deliver the last page of results.
         current_page = paginator.page(paginator.num_pages)
 
-    return render(request, 'index.html', {'meals': current_page})
+    return render(request, 'index.html', {'meals': current_page, 'search_query': search_query})
